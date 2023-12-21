@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
 import subprocess
 
-netstat_command = 'netstat -nval'
-run_args_str = "shell=True, capture_output=True, encoding='utf8', text=True"
+protos = ('tcp', 'udp')
 
-run_args = {}
-for arg in run_args_str.split(', '):
-    key, value = arg.split('=')
-    run_args[key] = eval(value)
+def run_netstat(proto=None):
+    proto = 'tcp'
+    netstat_command = f"netstat -nval -p {proto}"
+    run_args_str = "shell=True, capture_output=True, encoding='utf8', text=True"
 
-netstat_out = subprocess.run(netstat_command, **run_args).stdout
-netstat_lines = netstat_out.splitlines()
-for line in netstat_lines:
-    print(line)
+    run_args = {}
+    for arg in run_args_str.split(', '):
+        key, value = arg.split('=')
+        run_args[key] = eval(value)
+
+    netstat_out = subprocess.run(netstat_command, **run_args).stdout
+    netstat_lines = netstat_out.splitlines()
+    return netstat_lines
+
+for line in run_netstat():
+    if line.startswith('tcp'):
+        print(line)
