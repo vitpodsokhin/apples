@@ -1,13 +1,26 @@
 from dataclasses import dataclass
 import subprocess
 
+subprocess_run_args_str = "shell=True, capture_output=True, encoding='utf8', text=True"
+subprocess_run_args = {}
+for arg in subprocess_run_args_str.split(', '):
+    key, value = arg.split('=')
+    subprocess_run_args[key] = eval(value)
+
 @dataclass
-class TCP_Connection:
+class BaseConnection:
     proto: str
     recvQ: int
     sendQ: int
     localSocket: str
     foreignSocket: str
+
+    def __post_init__(self):
+        result = subprocess.run(f"ps -p {self.pid} -o command", **subprocess_run_args)
+        self.command_line = result.stdout.splitlines()[1]
+
+@dataclass
+class TCP_Connection(BaseConnection):
     state: str
     rhiwat: int
     shiwat: int
@@ -23,21 +36,8 @@ class TCP_Connection:
     fltrs: int
     command_line: str = None
 
-    def __post_init__(self):
-        result = subprocess.run(f"ps -p {self.pid} -o command", shell=True, capture_output=True, encoding='utf8', text=True)
-        try:
-            self.command_line = result.stdout.splitlines()[1]
-        except Exception as e:
-            print(e)
-
-
 @dataclass
-class UDP_Connection:
-    proto: str
-    recvQ: int
-    sendQ: int
-    localSocket: str
-    foreignSocket: str
+class UDP_Connection(BaseConnection):
     rhiwat: int
     shiwat: int
     pid: int
@@ -51,7 +51,3 @@ class UDP_Connection:
     rtncnt: int
     fltrs: int
     command_line: str = None
-
-    def __post_init__(self):
-        result = subprocess.run(f"ps -p {self.pid} -o command", shell=True, capture_output=True, encoding='utf8', text=True)
-        self.command_line = result.stdout.splitlines()[1]
