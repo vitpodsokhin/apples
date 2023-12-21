@@ -62,7 +62,6 @@ class UDP_Connection:
         self.command_line = result.stdout.splitlines()[1]
 
 def run_netstat(proto=None):
-    proto = 'tcp'
     netstat_command = f"netstat -nval -p {proto}"
 
     netstat_out = subprocess.run(netstat_command, **subprocess_run_args).stdout
@@ -72,13 +71,16 @@ def run_netstat(proto=None):
 def parse_netstat_connection(netstat_connection_line):
     if netstat_connection_line.startswith('tcp'):
         connection = TCP_Connection(*netstat_connection_line.split())
+    if netstat_connection_line.startswith('udp'):
+        connection = UDP_Connection(*netstat_connection_line.split())
     return connection
 
 from pprint import pprint
 def main():
-    for line in run_netstat():
-        if line.startswith('tcp'):
-            pprint(parse_netstat_connection(line))
+    for proto in protos:
+        for line in run_netstat(proto):
+            if line.startswith(proto):
+                pprint(parse_netstat_connection(line))
 
 if __name__ == '__main__':
     main()
