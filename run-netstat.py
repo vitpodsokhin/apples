@@ -2,13 +2,13 @@
 import subprocess
 from dataclasses import dataclass
 
-protos = ('tcp', 'udp')
 subprocess_run_args_str = "shell=True, capture_output=True, encoding='utf8', text=True"
-
 subprocess_run_args = {}
 for arg in subprocess_run_args_str.split(', '):
     key, value = arg.split('=')
     subprocess_run_args[key] = eval(value)
+
+protos = ('tcp', 'udp')
 
 @dataclass
 class BaseConnection:
@@ -56,13 +56,13 @@ class UDP_Connection(BaseConnection):
     command_line: str = None
 
 def run_netstat(proto=None):
-    netstat_command = f"netstat -nval -p {proto}"
-
+    netstat_command = f"netstat -nval {'-p '+proto if proto is not None else ''}"
     netstat_out = subprocess.run(netstat_command, **subprocess_run_args).stdout
     netstat_lines = netstat_out.splitlines()
     return netstat_lines
 
 def parse_netstat_connection(netstat_connection_line):
+    connection_classes = {'tcp': TCP_Connection, 'udp': UDP_Connection}
     if netstat_connection_line.startswith('tcp'):
         connection = TCP_Connection(*netstat_connection_line.split())
     elif netstat_connection_line.startswith('udp'):
