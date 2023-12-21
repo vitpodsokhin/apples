@@ -11,12 +11,19 @@ for arg in subprocess_run_args_str.split(', '):
     subprocess_run_args[key] = eval(value)
 
 @dataclass
-class TCP_Connection:
+class BaseConnection:
     proto: str
     recvQ: int
     sendQ: int
     localSocket: str
     foreignSocket: str
+
+    def __post_init__(self):
+        result = subprocess.run(f"ps -p {self.pid} -o command", **subprocess_run_args)
+        self.command_line = result.stdout.splitlines()[1]
+
+@dataclass
+class TCP_Connection(BaseConnection):
     state: str
     rhiwat: int
     shiwat: int
@@ -32,17 +39,8 @@ class TCP_Connection:
     fltrs: int
     command_line: str = None
 
-    def __post_init__(self):
-        result = subprocess.run(f"ps -p {self.pid} -o command", **subprocess_run_args)
-        self.command_line = result.stdout.splitlines()[1]       
-
 @dataclass
-class UDP_Connection:
-    proto: str
-    recvQ: int
-    sendQ: int
-    localSocket: str
-    foreignSocket: str
+class UDP_Connection(BaseConnection):
     rhiwat: int
     shiwat: int
     pid: int
@@ -57,10 +55,6 @@ class UDP_Connection:
     fltrs: int
     command_line: str = None
 
-    def __post_init__(self):
-        result = subprocess.run(f"ps -p {self.pid} -o command", **subprocess_run_args)
-        self.command_line = result.stdout.splitlines()[1]
-
 def run_netstat(proto=None):
     netstat_command = f"netstat -nval -p {proto}"
 
@@ -71,7 +65,7 @@ def run_netstat(proto=None):
 def parse_netstat_connection(netstat_connection_line):
     if netstat_connection_line.startswith('tcp'):
         connection = TCP_Connection(*netstat_connection_line.split())
-    if netstat_connection_line.startswith('udp'):
+    elif netstat_connection_line.startswith('udp'):
         connection = UDP_Connection(*netstat_connection_line.split())
     return connection
 
