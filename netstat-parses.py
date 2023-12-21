@@ -39,6 +39,7 @@ class TCP_Connection:
         result = subprocess.run(f"ps -p {self.pid} -o command", shell=True, capture_output=True, encoding='utf8', text=True)
         self._command_line = result.stdout.splitlines()[1]
 
+
 def run_netstat(proto: str = None) -> str:
     protos = ('tcp', 'udp')
     command = f"netstat -nlv {'-p' + proto if proto else ''}"
@@ -48,9 +49,5 @@ def run_netstat(proto: str = None) -> str:
 
 tcp_connections = run_netstat('tcp')
 
-tcp_connections_json = ', '.join([str(asdict(connection)) for connection in tcp_connections[0]])
+tcp_connections_json = [asdict(connection) for connection in tcp_connections]
 print(tcp_connections_json)
-# for connection in tcp_connections:
-#     print(asdict(connection))
-    
-# print(len(tcp_connections))
