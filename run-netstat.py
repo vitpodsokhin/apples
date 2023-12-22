@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 import subprocess
-from dataclasses import asdict
 from connection import TCP_Connection, UDP_Connection, subprocess_run_args
 
 protos = ('tcp', 'udp')
 
-def run_netstat(proto=None) -> list[str]:
+def run_netstat(proto:protos=None) -> list[str]:
     netstat_command = f"netstat -nval {'-p '+proto if proto is not None else ''}"
     netstat_out = subprocess.run(netstat_command, **subprocess_run_args).stdout
     netstat_lines = netstat_out.splitlines()
     return netstat_lines
 
-def parse_netstat_connection(netstat_connection_line) -> TCP_Connection|UDP_Connection:
+def parse_netstat_connection(netstat_connection_line:str) -> TCP_Connection|UDP_Connection:
     connection_classes = {'tcp': TCP_Connection, 'udp': UDP_Connection}
     proto = netstat_connection_line.split()[0]
     for protocol_name in protos:
@@ -21,11 +20,11 @@ def parse_netstat_connection(netstat_connection_line) -> TCP_Connection|UDP_Conn
     connection = Parse_Connection(*netstat_connection_line.split())
     return connection
 
-def parse_netstat_connections(netstat_lines=None) -> list[TCP_Connection|UDP_Connection]:
+def parse_netstat_connections(proto:protos=None, netstat_lines:str=None) -> list[TCP_Connection|UDP_Connection]:
     if netstat_lines == None:
-        netstat_lines = run_netstat()
+        netstat_lines = run_netstat(proto)
     connections = []
-    for line in run_netstat():
+    for line in netstat_lines:
         if line.startswith(protos):
             connection = parse_netstat_connection(line)
             connections.append(connection)
@@ -33,10 +32,11 @@ def parse_netstat_connections(netstat_lines=None) -> list[TCP_Connection|UDP_Con
 
 from pprint import pprint
 def main():
-    connections = parse_netstat_connections()
+    connections = parse_netstat_connections('tcp')
     for connection in connections:
-        connection_json = connection.to_json()
-        print(connection_json)
+        if connection.state == 'LISTEN':
+            connection_dict = connection.as_dict()
+            print(connection_dict)
 
 if __name__ == '__main__':
     main()

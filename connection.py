@@ -18,13 +18,27 @@ class BaseConnection:
 
     def __post_init__(self):
         if self.localSocket != '*.*':
-            self.localAddr = '.'.join(self.localSocket.split('.')[:-1])
-            self.localPort = self.localSocket.split('.')[-1]
+            address = '.'.join(self.localSocket.split('.')[:-1])
+            port = self.localSocket.split('.')[-1]
+            self.localSocket = f"{address}:{port}"
+
+            setattr(self, "localAddr", address)
+            setattr(self, "localPort", port)
+
         if self.remoteSocket != '*.*':
-            self.remoteAddr = '.'.join(self.remoteSocket.split('.')[:-1])
-            self.remotePort = self.remoteSocket.split('.')[-1]
+            address = '.'.join(self.remoteSocket.split('.')[:-1])
+            port = self.remoteSocket.split('.')[-1]
+            self.remoteSocket = f"{address}:{port}"
+
+            setattr(self, "remoteAddr", address)
+            setattr(self, "remotePort", port)
+
         result = subprocess.run(f"ps -p {self.pid} -o command", **subprocess_run_args)
         self.command_line = result.stdout.splitlines()[1]
+
+    def as_dict(self):
+        connection_dict = self.__dict__
+        return connection_dict
 
     def to_json(self):
         connection = {
