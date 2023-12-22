@@ -1,5 +1,5 @@
-from dataclasses import dataclass
 import subprocess
+from dataclasses import dataclass
 
 subprocess_run_args_str = "shell=True, capture_output=True, encoding='utf8', text=True"
 subprocess_run_args = {}
@@ -13,9 +13,15 @@ class BaseConnection:
     recvQ: int
     sendQ: int
     localSocket: str
-    foreignSocket: str
+    remoteSocket: str
 
     def __post_init__(self):
+        if self.localSocket != '*.*':
+            self.localAddr = '.'.join(self.localSocket.split('.')[:-1])
+            self.localPort = self.localSocket.split('.')[-1]
+        if self.remoteSocket != '*.*':
+            self.remoteAddr = '.'.join(self.remoteSocket.split('.')[:-1])
+            self.remotePort = self.remoteSocket.split('.')[-1]
         result = subprocess.run(f"ps -p {self.pid} -o command", **subprocess_run_args)
         self.command_line = result.stdout.splitlines()[1]
 
