@@ -25,7 +25,7 @@ def parse_netstat_connection(netstat_connection_line) -> TCP_Connection|UDP_Conn
         connection = UDP_Connection(*netstat_connection_line.split())
     return connection
 
-def parse_netstat_connections(netstat_lines=None) -> list[dict|TCP_Connection|UDP_Connection]:
+def parse_netstat_connections(netstat_lines=None) -> list[TCP_Connection|UDP_Connection]:
     if netstat_lines == None:
         netstat_lines = run_netstat()
     connections = []
@@ -38,7 +38,9 @@ def parse_netstat_connections(netstat_lines=None) -> list[dict|TCP_Connection|UD
 from pprint import pprint
 def main():
     connections = parse_netstat_connections()
-    print(connections)
+    for connection in connections:
+        connection_dict = asdict(connection)
+        print(connection_dict)
 
 if __name__ == '__main__':
     main()
