@@ -26,7 +26,7 @@ class BaseConnection:
         result = subprocess.run(f"ps -p {self.pid} -o command", **subprocess_run_args)
         self.command_line = result.stdout.splitlines()[1]
 
-    def as_json(self):
+    def to_json(self):
         connection = {
             'pid': self.pid,
             'proto': self.proto,

@@ -35,16 +35,8 @@ from pprint import pprint
 def main():
     connections = parse_netstat_connections()
     for connection in connections:
-        # connection_dict = asdict(connection)
-        connection_json = connection.as_json()
+        connection_json = connection.to_json()
         print(connection_json)
-
-# def main():
-#     connections = parse_netstat_connections()
-#     for i, connection in enumerate(connections, 1):
-#         # connection_dict = asdict(connection)
-#         connection_json = connection.as_json()
-#         print(f"{i}: {connection_json}")
 
 if __name__ == '__main__':
     main()
