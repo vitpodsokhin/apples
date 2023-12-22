@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
 import subprocess
 from dataclasses import asdict
-from connection import TCP_Connection, UDP_Connection
-
-subprocess_run_args_str = "shell=True, capture_output=True, encoding='utf8', text=True"
-subprocess_run_args = {}
-for arg in subprocess_run_args_str.split(', '):
-    key, value = arg.split('=')
-    subprocess_run_args[key] = eval(value)
+from connection import TCP_Connection, UDP_Connection, subprocess_run_args
 
 protos = ('tcp', 'udp')
 
@@ -20,10 +14,9 @@ def run_netstat(proto=None) -> list[str]:
 def parse_netstat_connection(netstat_connection_line) -> TCP_Connection|UDP_Connection:
     connection_classes = {'tcp': TCP_Connection, 'udp': UDP_Connection}
     proto = netstat_connection_line.split()[0]
-    if proto.startswith('tcp'):
-        proto = 'tcp'
-    elif proto.startswith('udp'):
-        proto = 'udp'
+    for protocol_name in protos:
+        if proto.startswith(protocol_name):
+            proto = protocol_name
     Parse_Connection = connection_classes[proto]
     connection = Parse_Connection(*netstat_connection_line.split())
     return connection
