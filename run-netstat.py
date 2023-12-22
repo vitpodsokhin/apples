@@ -19,10 +19,13 @@ def run_netstat(proto=None) -> list[str]:
 
 def parse_netstat_connection(netstat_connection_line) -> TCP_Connection|UDP_Connection:
     connection_classes = {'tcp': TCP_Connection, 'udp': UDP_Connection}
-    if netstat_connection_line.startswith('tcp'):
-        connection = TCP_Connection(*netstat_connection_line.split())
-    elif netstat_connection_line.startswith('udp'):
-        connection = UDP_Connection(*netstat_connection_line.split())
+    proto = netstat_connection_line.split()[0]
+    if proto.startswith('tcp'):
+        proto = 'tcp'
+    elif proto.startswith('udp'):
+        proto = 'udp'
+    Parse_Connection = connection_classes[proto]
+    connection = Parse_Connection(*netstat_connection_line.split())
     return connection
 
 def parse_netstat_connections(netstat_lines=None) -> list[TCP_Connection|UDP_Connection]:
