@@ -1,4 +1,5 @@
 import subprocess
+import json
 from dataclasses import dataclass
 
 subprocess_run_args_str = "shell=True, capture_output=True, encoding='utf8', text=True"
@@ -24,6 +25,17 @@ class BaseConnection:
             self.remotePort = self.remoteSocket.split('.')[-1]
         result = subprocess.run(f"ps -p {self.pid} -o command", **subprocess_run_args)
         self.command_line = result.stdout.splitlines()[1]
+
+    def as_json(self):
+        connection = {
+            'pid': self.pid,
+            'proto': self.proto,
+            'command_line': self.command_line,
+            'localSocket': self.localSocket,
+            'remoteSocket': self.remoteSocket
+        }
+        connection_json = json.dumps(connection)
+        return connection_json
 
 @dataclass
 class TCP_Connection(BaseConnection):
