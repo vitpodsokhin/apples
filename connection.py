@@ -16,23 +16,22 @@ class BaseConnection:
     localSocket: str
     remoteSocket: str
 
+
+    def process_socket(self, socket_attr, socket_str, socket_type):
+        address = '.'.join(socket_str.split('.')[:-1])
+        port = socket_str.split('.')[-1]
+        if socket_str != '*.*':
+            setattr(self, socket_attr, f"{address}:{port}")
+            setattr(self, f"{socket_type}Addr", address)
+            setattr(self, f"{socket_type}Port", port)
+        # elif address == '*': # and port != '*':
+        #     setattr(self, socket_attr, f"0.0.0.0:{port}")
+        #     setattr(self, f"{socket_type}Addr", '0.0.0.0')
+        #     setattr(self, f"{socket_type}Port", port)
+
     def __post_init__(self):
-        if self.localSocket != '*.*':
-            address = '.'.join(self.localSocket.split('.')[:-1])
-            port = self.localSocket.split('.')[-1]
-            self.localSocket = f"{address}:{port}"
-
-            setattr(self, "localAddr", address)
-            setattr(self, "localPort", port)
-
-        if self.remoteSocket != '*.*':
-            address = '.'.join(self.remoteSocket.split('.')[:-1])
-            port = self.remoteSocket.split('.')[-1]
-            self.remoteSocket = f"{address}:{port}"
-
-            setattr(self, "remoteAddr", address)
-            setattr(self, "remotePort", port)
-
+        self.process_socket("localSocket", self.localSocket, "local")
+        self.process_socket("remoteSocket", self.remoteSocket, "remote")
         result = subprocess.run(f"ps -p {self.pid} -o command", **subprocess_run_args)
         self.command_line = result.stdout.splitlines()[1]
 

@@ -32,9 +32,10 @@ def parse_netstat_connections(proto:protos=None, netstat_lines:str=None) -> list
 
 from pprint import pprint
 def main():
-    connections = parse_netstat_connections('tcp')
+    connections = parse_netstat_connections('udp')
     for connection in connections:
-        if connection.state == 'LISTEN':
+        # if connection.state == 'LISTEN':
+        # if connection.localSocket.endswith('9999') or connection.remoteSocket.endswith('9999'):
             connection_dict = connection.as_dict()
             print(connection_dict)
 
