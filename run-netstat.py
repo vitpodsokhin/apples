@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import subprocess
 from dataclasses import dataclass
+from connection import TCP_Connection, UDP_Connection
 
 subprocess_run_args_str = "shell=True, capture_output=True, encoding='utf8', text=True"
 subprocess_run_args = {}
@@ -10,7 +11,6 @@ for arg in subprocess_run_args_str.split(', '):
 
 protos = ('tcp', 'udp')
 
-from connection import TCP_Connection, UDP_Connection
 
 def run_netstat(proto=None):
     netstat_command = f"netstat -nval {'-p '+proto if proto is not None else ''}"
