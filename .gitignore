@@ -1,3 +1,7 @@
 __pycache__/
 test/
 *.json
+*.py
+*.ipynb
+!connection.py
+!run-netstat.py
