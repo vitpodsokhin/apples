@@ -36,9 +36,9 @@ The project consists of two main files:
    ./run-netstat.py
    ```
 
-   This will execute the `netstat` command, parse the connection information, get command lines of the corresponding processes
-   #TODO: get cmd_line from pid only once; implement the [Process](connection.py#L103) class for this
-   and print the results in JSON format.
+   This will execute the `netstat` command, parse the connection information, get command lines of the corresponding processes and print the results in JSON format.
+
+   #TODO: get cmd_line from pid only once; implement the [Process](connection.py#L103) class for this.
 
 ### Customization
 
