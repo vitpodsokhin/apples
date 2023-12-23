@@ -4,6 +4,7 @@ from subprocess import run
 
 from Common import subprocess_run_args
 from connection import TCP_Connection, UDP_Connection
+from Process import Process
 
 families = ('inet', 'inet6')
 protos = ('tcp', 'udp')
@@ -81,16 +82,36 @@ def parse_netstat_connections(
 
     return connections
 
-def main():
+def get_pids_of_processes_with_connections(
+        connections: list[TCP_Connection | UDP_Connection] = None,
+        proto: protos = None
+    ) -> list[int]:
+    if connections is None:
+        connections = parse_netstat_connections(proto)
+    pids = sorted(set([connection.pid for connection in connections]))
+
+    return pids
+
+def get_processes_with_connections(pids=None):
+    if pids == None:
+        pids = get_pids_of_processes_with_connections()
+    processes_with_connections = [Process(pid).as_dict for pid in pids]
+
+    return processes_with_connections
+
+def print_connections_json():
     connections = parse_netstat_connections()
     connections_list = []
     for connection in connections:
-        connection_dict = connection.to_dict()
-        connections_list.append(connection_dict)
-        connection_dict = connection.as_dict()
+        connection_dict = connection.as_dict
         connections_list.append(connection_dict)
 
     print(json.dumps(connections_list))
+
+def main():
+    # print(get_pids_of_processes_with_connections())
+    print(json.dumps(get_processes_with_connections()))
+    # print_connections_json()
 
 if __name__ == '__main__':
     main()

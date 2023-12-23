@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from subprocess import run
 
 from Common import subprocess_run_args
+from connection import TCP_Connection, UDP_Connection
 
 @dataclass
 class Process:
@@ -14,3 +15,11 @@ class Process:
             self.command_line = result.stdout.splitlines()[1]
         except IndexError:
             self.command_line = ''
+
+    def get_connections(self):
+        self.connections = []
+        
+
+    @property
+    def as_dict(self):
+        return self.__dict__

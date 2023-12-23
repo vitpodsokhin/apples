@@ -30,9 +30,9 @@ class BaseConnection:
         self.process_socket("localSocket", self.localSocket, "local")
         self.process_socket("remoteSocket", self.remoteSocket, "remote")
 
+    @property
     def as_dict(self) -> dict:
-        connection_dict = self.__dict__
-        return connection_dict
+        return self.__dict__
 
     def to_dict(self) -> dict:
         connection_dict = {
