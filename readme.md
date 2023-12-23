@@ -8,7 +8,7 @@ The project consists of two main files:
 
 1. **connection.py**: This file defines three classes - `BaseConnection`, `TCP_Connection`, and `UDP_Connection`. These classes encapsulate the attributes and methods related to network connections. The `BaseConnection` class serves as the base for TCP and UDP connections, containing common attributes and methods.
 
-2. **main.py**: The main executable script interacts with the `netstat` command to retrieve network connection information. It utilizes the classes defined in `connection.py` to parse and represent the connections. The parsed data is then converted into a list of dictionaries and printed in JSON format.
+2. **run-netstat.py**: The main executable script interacts with the `netstat` command to retrieve network connection information. It utilizes the classes defined in `connection.py` to parse and represent the connections. The parsed data is then converted into a list of dictionaries and printed in JSON format.
 
 ## How to Use
 
