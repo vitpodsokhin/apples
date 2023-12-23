@@ -4,11 +4,15 @@ This Python project provides a utility for parsing network connections using the
 
 ## Project Structure
 
-The project consists of two main files:
+The project consists of four main files:
 
-1. **connection.py**: This file defines three classes - `BaseConnection`, `TCP_Connection`, and `UDP_Connection`. These classes encapsulate the attributes and methods related to network connections. The `BaseConnection` class serves as the base for TCP and UDP connections, containing common attributes and methods.
+1. **run-netstat.py**: The main executable script interacts with the `netstat` command to retrieve network connection information. It utilizes the classes defined in `connection.py` to parse and represent the connections. The parsed data is then converted into a list of dictionaries and printed in JSON format.
 
-2. **run-netstat.py**: The main executable script interacts with the `netstat` command to retrieve network connection information. It utilizes the classes defined in `connection.py` to parse and represent the connections. The parsed data is then converted into a list of dictionaries and printed in JSON format.
+2. **connection.py**: This file defines two main classes imported to main executable - `TCP_Connection`, and `UDP_Connection`, implemented by inheritance. These classes encapsulate the attributes and methods related to network connections. The `BaseConnection` class serves as the base for TCP and UDP connections, containing common attributes and methods.
+
+3. **Process.py**: Defines implementation of `Process` class.
+
+4. **Common.py**: Defines supplimentary functions.
 
 ## How to Use
 
@@ -53,5 +57,5 @@ This project is licensed under the [GNU GPL License](LICENSE). Feel free to use,
 
 ## Acknowledgments
 
-- The project uses the `dataclasses` module for structured data representation.
+- The project uses the `dataclasses` module for structured data representation, and `subprocess` module for gathering information about system connections and processes.
 - Special thanks to the Python community and contributors.
