@@ -27,11 +27,12 @@ class BaseConnection:
         else:
             setattr(self, socket_attr, '*:*')
 
+    def convert_to_int(self, *attributes):
+        for attribute in attributes:
+            setattr(self, attribute, int(getattr(self, attribute)))
+
     def __post_init__(self):
-        self.recvQ = int(self.recvQ)
-        self.sendQ = int(self.sendQ)
-        self.pid = int(self.pid)
-        self.epid = int(self.epid)
+        self.convert_to_int('recvQ', 'sendQ', 'pid', 'epid', 'rhiwat', 'shiwat')
         self.family = 4 if self.proto.endswith('4') else 6
         self.process_socket("localSocket", self.localSocket, "local")
         self.process_socket("remoteSocket", self.remoteSocket, "remote")
