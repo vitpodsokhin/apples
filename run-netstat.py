@@ -3,7 +3,7 @@ import json
 from subprocess import run
 
 from Common import subprocess_run_args
-from connection import TCP_Connection, UDP_Connection
+from Connection import TCP_Connection, UDP_Connection
 from Process import Process
 
 families = ('inet', 'inet6')
@@ -109,8 +109,12 @@ def print_connections_json():
     print(json.dumps(connections_list))
 
 def main():
+    from Netstat import Netstat
+    connections_dicts = [connection.as_dict for connection in Netstat.parse_netstat_connections()]
+    print(json.dumps(connections_dicts))
+
     # print(get_pids_of_processes_with_connections())
-    print(json.dumps(get_processes_with_connections()))
+    # print(json.dumps(get_processes_with_connections()))
     # print_connections_json()
 
 if __name__ == '__main__':

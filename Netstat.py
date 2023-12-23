@@ -2,13 +2,12 @@ from subprocess import run
 from Common import subprocess_run_args
 from Connection import TCP_Connection, UDP_Connection
 
-families = ('inet', 'inet6')
 protos = ('tcp', 'udp')
+families = ('inet', 'inet6')
 
 class Netstat:
 
-    @staticmethod
-    def run_netstat(
+    def _run_netstat(
             proto: protos = None,
             family: families = None
         ) -> list[str]:
@@ -21,8 +20,7 @@ class Netstat:
 
         return netstat_lines
 
-    @staticmethod
-    def parse_netstat_connection(
+    def _parse_netstat_connection(
             netstat_connection_line: str
         ) -> TCP_Connection | UDP_Connection:
         connection_classes = {'tcp': TCP_Connection, 'udp': UDP_Connection}
@@ -43,12 +41,12 @@ class Netstat:
             netstat_lines: str = None
         ) -> list[TCP_Connection | UDP_Connection]:
         if netstat_lines is None:
-            netstat_lines = Netstat.run_netstat(family, proto)
+            netstat_lines = Netstat._run_netstat(family, proto)
 
         connections = []
         for line in netstat_lines:
             if line.startswith(protos):
-                connection = Netstat.parse_netstat_connection(line)
+                connection = Netstat._parse_netstat_connection(line)
                 connections.append(connection)
 
         return connections
