@@ -65,6 +65,11 @@ class Common_Connection_metrics():
     family: int = None
 
 @dataclass
-class TCP_Connection(Common_Connection_metrics, TCP_State, BaseConnection): ...
+class TCP_Connection(Common_Connection_metrics, TCP_State, BaseConnection):
+    '''Defined by inheritance'''
+    ...
+
 @dataclass
-class UDP_Connection(Common_Connection_metrics, BaseConnection): ...
+class UDP_Connection(Common_Connection_metrics, BaseConnection):
+    '''Defined by inheritance'''
+    ...
