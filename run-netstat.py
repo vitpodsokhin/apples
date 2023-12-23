@@ -82,7 +82,8 @@ def main():
     connections = parse_netstat_connections()
     connections_list = []
     for connection in connections:
-        connection_dict = connection.to_dict()
+        # connection_dict = connection.to_dict()
+        connection_dict = connection.as_dict()
         connections_list.append(connection_dict)
 
     print(json.dumps(connections_list))
