@@ -35,8 +35,8 @@ def parse_netstat_connection(
     return connection
 
 def parse_netstat_connections(
-        family:families=None,
         proto:protos=None,
+        family:families=None,
         netstat_lines:str=None
     ) -> list[TCP_Connection|UDP_Connection]:
 

@@ -41,7 +41,10 @@ class BaseConnection:
         self.process_socket("localSocket", self.localSocket, "local")
         self.process_socket("remoteSocket", self.remoteSocket, "remote")
         result = subprocess.run(f"ps -p {self.pid} -o command", **subprocess_run_args)
-        self.command_line = result.stdout.splitlines()[1]
+        try:
+            self.command_line = result.stdout.splitlines()[1]
+        except IndexError:
+            self.command_line = ''
 
     def as_dict(self) -> dict:
         connection_dict = self.__dict__
