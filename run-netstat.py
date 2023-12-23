@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
-import subprocess, json
-from connection import TCP_Connection, UDP_Connection, subprocess_run_args
+import json
+from subprocess import run
+
+from Common import subprocess_run_args
+from Connection import TCP_Connection, UDP_Connection
 
 families = ('inet', 'inet6')
 protos = ('tcp', 'udp')
@@ -23,7 +26,7 @@ def run_netstat(
     proto_selector = '-p ' + proto if proto is not None else ''
 
     netstat_command = f"netstat -nval {family_selector} {proto_selector}"
-    netstat_out = subprocess.run(netstat_command, **subprocess_run_args).stdout
+    netstat_out = run(netstat_command, **subprocess_run_args).stdout
     netstat_lines = netstat_out.splitlines()
 
     return netstat_lines
@@ -82,7 +85,8 @@ def main():
     connections = parse_netstat_connections()
     connections_list = []
     for connection in connections:
-        # connection_dict = connection.to_dict()
+        connection_dict = connection.to_dict()
+        connections_list.append(connection_dict)
         connection_dict = connection.as_dict()
         connections_list.append(connection_dict)
 
