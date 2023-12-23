@@ -3,7 +3,7 @@ import json
 from subprocess import run
 
 from Common import subprocess_run_args
-from Connection import TCP_Connection, UDP_Connection
+from connection import TCP_Connection, UDP_Connection
 
 families = ('inet', 'inet6')
 protos = ('tcp', 'udp')
