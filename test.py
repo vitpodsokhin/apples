@@ -1,24 +1,21 @@
 #!/usr/bin/env python3
-import json
 from Netstat import Netstat
 from Process import Process
 
-connections = Netstat.parse_netstat_connections()
-pids = Netstat.get_connection_pids(connections)
-
-def get_connections_of_process(process, connections=None):
-    if connections == None:
+def get_connections_of_process(process, connections=None) -> dict:
+    if connections is None:
         connections = Netstat.parse_netstat_connections()
     process_connections = [connection for connection in connections if connection.pid == process.pid]
-    return (process, process_connections)
+    return {
+        str(process.pid): process.as_dict,
+        'connections_count': len(process_connections),
+        'connections': [connection.to_dict() for connection in process_connections]
+    }
 
+connections = Netstat.parse_netstat_connections()
+pids = Netstat.get_connection_pids(connections)
 processes = [Process(pid) for pid in pids]
 
-from pprint import pprint
+from json import dumps
 for process in processes:
-    pprint(get_connections_of_process(process, connections))
-# for process in processes:
-#     pprint(get_connections_of_process(process, connections))
-
-
-# print(json.dumps(processes))
+    print(dumps(get_connections_of_process(process, connections)))
