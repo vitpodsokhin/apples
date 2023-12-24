@@ -15,12 +15,6 @@ class Process:
         except IndexError:
             self.command_line = ''
 
-    def get_connections(self, pids=None):
-        self.connections = []
-        if pids == None:
-            
-        for pid in pids
-
     @property
     def as_dict(self):
         return self.__dict__

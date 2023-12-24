@@ -50,3 +50,10 @@ class Netstat:
                 connections.append(connection)
 
         return connections
+
+    @staticmethod
+    def get_connection_pids(connections=None) -> list[int]:
+        if connections is None:
+            connections = Netstat.parse_netstat_connections()
+        pids = sorted(set([connection.pid for connection in connections]))
+        return pids
