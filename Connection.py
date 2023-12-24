@@ -37,12 +37,9 @@ class BaseConnection:
     def to_dict(self) -> dict:
         connection_dict = {
             # 'pid': self.pid,
-            'family': self.family,
-            'proto': self.proto,
-            'localAddr': self.localAddr,
-            'localPort': self.localPort,
-            'remoteAddr': self.remoteAddr,
-            'remotePort': self.remotePort
+            'family': self.family, 'proto': self.proto,
+            'localAddr': self.localAddr, 'localPort': self.localPort,
+            'remoteAddr': self.remoteAddr, 'remotePort': self.remotePort
             # 'localSocket': self.localSocket,
             # 'remoteSocket': self.remoteSocket
         }
