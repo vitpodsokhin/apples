@@ -20,12 +20,19 @@ class Process:
     def as_dict(self):
         return self.__dict__
 
-    def get_connections_of_process(process, connections=None) -> dict:
+    @staticmethod
+    def get_connections_of_a_process(process, connections=None) -> dict:
         if connections is None:
             connections = Netstat.get_connections()
         connections_of_process = [connection for connection in connections if connection.pid == process.pid]
-        return {
-            str(process.pid): process.as_dict,
+        dict_of_process_with_connections = {
+            'process': process.as_dict,
             'connections_count': len(connections_of_process),
             'connections': [connection.to_dict() for connection in connections_of_process]
         }
+
+        return dict_of_process_with_connections
+
+    def get_connections_of_process(self) -> dict:
+        dict_of_process_with_connections = Process.get_connections_of_a_process(self)
+        return dict_of_process_with_connections
