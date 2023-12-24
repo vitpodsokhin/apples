@@ -1,18 +1,94 @@
-# Netstat Connection Parser
+# Netstat Connection Analyzer
 
-This Python project provides a utility for parsing network connections using the `netstat` command. It defines classes to represent TCP and UDP connections, offering a structured way to analyze and process network information.
+This Python project provides a comprehensive solution for analyzing network connections using the `netstat` command. The project is structured into multiple modules for enhanced readability and modularity.
 
 ## Project Structure
 
-The project consists of four main files:
+### Common.py
 
-1. **run-netstat.py**: The main executable script interacts with the `netstat` command to retrieve network connection information. It utilizes the classes defined in `connection.py` to parse and represent the connections. The parsed data is then converted into a list of dictionaries and printed in JSON format.
+The `Common.py` module centralizes common configurations for subprocess execution.
 
-2. **connection.py**: This file defines two main classes imported to main executable - `TCP_Connection`, and `UDP_Connection`, implemented by inheritance. These classes encapsulate the attributes and methods related to network connections. The `BaseConnection` class serves as the base for TCP and UDP connections, containing common attributes and methods.
+```python
+subprocess_run_args_str = "shell=True, capture_output=True, text=True, encoding='utf8'"
+subprocess_run_args = {}
+for arg in subprocess_run_args_str.split(', '):
+    key, value = arg.split('=')
+    subprocess_run_args[key] = eval(value)
+del subprocess_run_args_str
+```
 
-3. **Process.py**: Defines implementation of `Process` class.
+### Process.py
 
-4. **Common.py**: Defines supplimentary functions.
+The `Process.py` module defines a `Process` data class for representing system processes.
+
+```python
+from dataclasses import dataclass
+from subprocess import run
+from Common import subprocess_run_args
+
+@dataclass
+class Process:
+    pid: int
+    command_line: str = ''
+
+    # ... (omitted for brevity)
+```
+
+### Connection.py
+
+The `Connection.py` module contains data classes related to network connections, offering a structured representation.
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class BaseConnection:
+    # ... (omitted for brevity)
+
+@dataclass
+class TCP_State():
+    # ... (omitted for brevity)
+
+@dataclass
+class Common_Connection_metrics():
+    # ... (omitted for brevity)
+
+@dataclass
+class TCP_Connection(Common_Connection_metrics, TCP_State, BaseConnection):
+    # ... (omitted for brevity)
+
+@dataclass
+class UDP_Connection(Common_Connection_metrics, BaseConnection):
+    # ... (omitted for brevity)
+```
+
+### Netstat.py
+
+The `Netstat.py` module encapsulates the logic for running the `netstat` command and parsing its output.
+
+```python
+from subprocess import run
+from Common import subprocess_run_args
+from Connection import TCP_Connection, UDP_Connection
+
+protos = ('tcp', 'udp')
+families = ('inet', 'inet6')
+
+class Netstat:
+    # ... (omitted for brevity)
+```
+
+### test.py
+
+The `test.py` script demonstrates the usage of the project by fetching network connections for each process.
+
+```python
+#!/usr/bin/env python3
+from Netstat import Netstat
+from Process import Process
+
+# ... (omitted for brevity)
+```
 
 ## How to Use
 
@@ -34,18 +110,18 @@ The project consists of four main files:
    cd apples
    ```
 
-3. Run the `run-netstat` script:
+3. Run the test script:
 
    ```bash
-   ./run-netstat.py
+   ./test.py
    ```
 
-   This will execute the `netstat` command, parse the connection information, get command lines of the corresponding processes and print the results in JSON format.
+   This script fetches and prints network connections for each process.
 
 ### Customization
 
-- You can customize the script to filter connections based on the network family (`inet` or `inet6`) and protocol (`tcp` or `udp`). Modify the `families` and `protos` variables in `main.py` accordingly.
-- #TODO: filter by state, interface.
+- Modify the project modules to suit your specific requirements.
+- Explore the individual modules to understand the data classes and functionalities they provide.
 
 ## Contributing
 
@@ -57,5 +133,4 @@ This project is licensed under the [GNU GPL License](LICENSE). Feel free to use,
 
 ## Acknowledgments
 
-- The project uses the `dataclasses` module for structured data representation, and `subprocess` module for gathering information about system connections and processes.
 - Special thanks to the Python community and contributors.
