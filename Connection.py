@@ -8,7 +8,7 @@ class BaseConnection:
     localSocket: str
     remoteSocket: str
 
-    def process_socket(self, socket_attr, socket_str, socket_location):
+    def _process_socket(self, socket_attr, socket_str, socket_location):
         address = '.'.join(socket_str.split('.')[:-1])
         port = socket_str.split('.')[-1]
         if socket_str != '*.*':
@@ -20,15 +20,15 @@ class BaseConnection:
             setattr(self, f"{socket_location}Addr", address)
             setattr(self, f"{socket_location}Port", 0)
 
-    def convert_to_int(self, *attributes):
+    def _convert_to_int(self, *attributes):
         for attribute in attributes:
             setattr(self, attribute, int(getattr(self, attribute)))
 
     def __post_init__(self):
-        self.convert_to_int('recvQ', 'sendQ', 'pid', 'epid', 'rhiwat', 'shiwat')
+        self._convert_to_int('recvQ', 'sendQ', 'pid', 'epid', 'rhiwat', 'shiwat')
         self.family = 4 if self.proto.endswith('4') else 6
-        self.process_socket("localSocket", self.localSocket, "local")
-        self.process_socket("remoteSocket", self.remoteSocket, "remote")
+        self._process_socket("localSocket", self.localSocket, "local")
+        self._process_socket("remoteSocket", self.remoteSocket, "remote")
 
     @property
     def as_dict(self) -> dict:
@@ -36,11 +36,15 @@ class BaseConnection:
 
     def to_dict(self) -> dict:
         connection_dict = {
-            'pid': self.pid,
+            # 'pid': self.pid,
             'family': self.family,
             'proto': self.proto,
-            'localSocket': self.localSocket,
-            'remoteSocket': self.remoteSocket
+            'localAddr': self.localAddr,
+            'localPort': self.localPort,
+            'remoteAddr': self.remoteAddr,
+            'remotePort': self.remotePort
+            # 'localSocket': self.localSocket,
+            # 'remoteSocket': self.remoteSocket
         }
         return connection_dict
 

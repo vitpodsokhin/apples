@@ -4,15 +4,15 @@ from Process import Process
 
 def get_connections_of_process(process, connections=None) -> dict:
     if connections is None:
-        connections = Netstat.parse_netstat_connections()
-    process_connections = [connection for connection in connections if connection.pid == process.pid]
+        connections = Netstat.get_connections()
+    connections_of_process = [connection for connection in connections if connection.pid == process.pid]
     return {
         str(process.pid): process.as_dict,
-        'connections_count': len(process_connections),
-        'connections': [connection.to_dict() for connection in process_connections]
+        'connections_count': len(connections_of_process),
+        'connections': [connection.to_dict() for connection in connections_of_process]
     }
 
-connections = Netstat.parse_netstat_connections()
+connections = Netstat.get_connections()
 pids = Netstat.get_connection_pids(connections)
 processes = [Process(pid) for pid in pids]
 

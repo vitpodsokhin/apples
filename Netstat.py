@@ -1,4 +1,5 @@
 from subprocess import run
+
 from Common import subprocess_run_args
 from Connection import TCP_Connection, UDP_Connection
 
@@ -23,19 +24,19 @@ class Netstat:
     def _parse_netstat_connection(
             netstat_connection_line: str
         ) -> TCP_Connection | UDP_Connection:
-        connection_classes = {'tcp': TCP_Connection, 'udp': UDP_Connection}
+        Connection_Classes = {'tcp': TCP_Connection, 'udp': UDP_Connection}
         proto = netstat_connection_line.split()[0]
 
         for protocol_name in protos:
             if proto.startswith(protocol_name):
                 proto = protocol_name
-        Parse_Connection = connection_classes[proto]
+        Parse_Connection = Connection_Classes[proto]
         connection = Parse_Connection(*netstat_connection_line.split())
 
         return connection
 
     @staticmethod
-    def parse_netstat_connections(
+    def get_connections(
             proto: protos = None,
             family: families = None,
             netstat_lines: str = None
@@ -54,6 +55,6 @@ class Netstat:
     @staticmethod
     def get_connection_pids(connections=None) -> list[int]:
         if connections is None:
-            connections = Netstat.parse_netstat_connections()
+            connections = Netstat.get_connections()
         pids = sorted(set([connection.pid for connection in connections]))
         return pids
